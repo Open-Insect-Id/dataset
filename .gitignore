@@ -1,0 +1,6 @@
+*.json
+*.tar.gz
+train/
+val/
+train_mini/
+public_test/
