@@ -8,4 +8,3 @@ This repository contains the dataset for the Open-Insect-ID project, which focus
 - `val/`: Validation images and annotations
 - `train_mini/`: Mini training set
 - `public_test/`: Public test set
-- JSON files: Dataset annotations and metadata
