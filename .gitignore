@@ -4,3 +4,4 @@ train_mini/
 public_test/
 *.tar.gz
 *.json
+venv/
