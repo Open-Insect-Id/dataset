@@ -15,10 +15,9 @@ Cette approche hiérarchique permet de **réduire l'impact des erreurs** : si le
 ## Structure du Dépôt
 
 ### Données
-- `train/` : Images et annotations d'entraînement
-- `val/` : Images et annotations de validation
-- `train_mini/` : Petit ensemble d'entraînement pour les tests rapides
-- `public_test/` : Ensemble de test public
+- `data/hierarchy_map.json` : Mapping hiérarchique généré
+- `data/tree.txt` : Structure des dossiers
+- `logs/` : Logs des dossiers supprimés/corrompus
 
 ### Scripts Utilitaires (`utility_scripts/`)
 - `tree.py` : Parcours récursif des dossiers pour vérifier l'intégrité du transfert
@@ -34,18 +33,10 @@ Cette approche hiérarchique permet de **réduire l'impact des erreurs** : si le
 - `install.sh` / `install.bat` : Scripts d'installation
 - `main.py` : Script principal (si applicable)
 
-### Données (`data/`)
-- `hierarchy_map.json` : Mapping hiérarchique généré
-- `tree.txt` : Structure des dossiers
-- `output/` : Sorties diverses
-
-### Logs (`logs/`)
-- Fichiers de logs des dossiers supprimés/corrompus
-
 ### Configuration
 - `requirements.txt` : Dépendances Python
 - `scripts/install.sh` / `scripts/install.bat` : Scripts d'installation pour Linux/Mac et Windows
-- `docs/NOTEBOOK_README.md` : Documentation détaillée du notebook et des fonctions
+- `notebooks/NOTEBOOK_README.md` : Documentation détaillée du notebook et des fonctions
 
 ## Installation
 
@@ -60,14 +51,6 @@ Cette approche hiérarchique permet de **réduire l'impact des erreurs** : si le
 
 # Windows
 scripts/install.bat
-```
-
-### Installation Manuelle
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/Mac
-# ou venv\Scripts\activate  # Windows
-pip install -r requirements.txt
 ```
 
 ## Utilisation
