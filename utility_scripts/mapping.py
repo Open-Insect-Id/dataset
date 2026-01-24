@@ -3,6 +3,24 @@ import json
 from collections import defaultdict
 
 def build_taxa_maps(species_encountered, annotated_images, train_mini_folder):
+    """
+    Construit les mappings taxonomiques et géographiques complets.
+    
+    À partir des espèces rencontrées et des annotations géographiques,
+    crée un mapping de taxons (clé = tuple (ordre, famille, genre, espèce))
+    vers la hiérarchie, et une base de données géographique associant
+    chaque taxon à ses coordonnées (lat, lon) issues des images annotées.
+    
+    Args:
+        species_encountered: dict[str, list] des espèces (de parse_taxonomy_folders)
+        annotated_images: dict[str, tuple] chemin relatif -> (lat, lon)
+        train_mini_folder: chemin du dossier train_mini
+        
+    Returns:
+        Tuple (full_taxa_map, full_geo_db):
+        - full_taxa_map: dict[tuple, dict] taxon -> hiérarchie
+        - full_geo_db: dict[tuple, list] taxon -> liste de [lat, lon]
+    """
     full_taxa_map = {}
     full_geo_db = defaultdict(list)
     
@@ -27,7 +45,18 @@ def build_taxa_maps(species_encountered, annotated_images, train_mini_folder):
     return full_taxa_map, full_geo_db
 
 def save_hierarchy_map(full_taxa_map, full_geo_db, stats, output_file):
-    """Sauvegarde JSON final."""
+    """
+    Sauvegarde la hiérarchie taxonomique et les données géographiques dans un fichier JSON.
+    
+    Sérialise les mappings et statistiques pour une utilisation ultérieure,
+    par exemple dans les datasets hiérarchiques.
+    
+    Args:
+        full_taxa_map: dict[tuple, dict] des taxons
+        full_geo_db: dict[tuple, list] des coordonnées
+        stats: dict des statistiques
+        output_file: chemin du fichier JSON de sortie
+    """
     full_geo_serializable = {str(k): [[float(c[0]), float(c[1])] for c in v] 
                             for k, v in full_geo_db.items()}
     
@@ -40,7 +69,20 @@ def save_hierarchy_map(full_taxa_map, full_geo_db, stats, output_file):
     print(f"💾 Sauvegardé: {len(full_taxa_map)} taxons dans {output_file}")
 
 def build_hierarchy_labels(data_dir, hierarchy_map_file):
-    """Mapping ImageFolder idx → [ordre_id, famille_id, genre_id, espece_id] SANS Torch."""
+    """
+    Construit le mapping des indices ImageFolder vers les labels hiérarchiques.
+    
+    À partir des classes ImageFolder et de la hiérarchie sauvegardée,
+    crée un dictionnaire associant chaque index de classe à une liste
+    [ordre_id, famille_id, genre_id, espece_id] pour l'entraînement hiérarchique.
+    
+    Args:
+        data_dir: répertoire des données (contient train_mini)
+        hierarchy_map_file: fichier JSON de la hiérarchie
+        
+    Returns:
+        dict[int, list]: mapping index -> labels hiérarchiques
+    """
     
     # 1. Scan dossiers → classes ImageFolder
     train_path = os.path.join(data_dir, 'train_mini/train_mini')

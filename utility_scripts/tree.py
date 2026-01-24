@@ -6,6 +6,26 @@ def tree(
     tree_file: str | Path = "tree.txt",
     _file=None,
 ) -> int:
+    """
+    Parcourt récursivement l'arborescence du dossier passé en argument.
+    Utile pour vérifier le bon transfert des fichiers, en utilisant un programme
+    permettant la comparaison de l'arborescence exportée avec celle exécutée
+    localement avant l'upload du dataset.
+    
+    Note : Ce programme n'a pas pour but de vérifier l'intégrité des images,
+    ce qui se révélera être un vrai problème par la suite. En effet, avec les
+    interruptions d'Internet, certaines images ont été corrompues durant le
+    transfert, et il m'a fallu longtemps avant de m'en rendre compte.
+    
+    Args:
+        path: Chemin du dossier à analyser
+        indent: Indentation pour l'affichage (interne)
+        tree_file: Fichier où écrire l'arborescence
+        _file: Handle de fichier (interne)
+    
+    Returns:
+        Nombre total de fichiers dans l'arborescence
+    """
     
     path = Path(path)
     file_count = 0

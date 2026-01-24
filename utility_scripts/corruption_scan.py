@@ -5,7 +5,27 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from PIL import Image
 
 def verify_image_validity(full_path):
-    """Test PROGRESIF + debug."""
+    """
+    Vérifie l'intégrité d'une image.
+    
+    Cette fonction a été ajoutée après un premier entraînement complet, car nous
+    expérimentions des erreurs difficiles à trouver : la corruption d'images,
+    qui ayant servi à entraîner le modèle, introduisait des erreurs dans les
+    prédictions (par exemple, ordre et famille corrects, mais genre et espèce
+    n'existant pas sous cette famille).
+    
+    Nous ne pouvons pas éliminer ces images du dataset sur Kaggle car le dossier
+    d'input est en lecture seule. Pour contourner le problème, nous écrivons
+    dans un fichier la liste des fichiers corrompus à l'avance, puis lors de
+    l'entraînement final, nous ajoutons une vérification pour ne pas traiter
+    les images dont le chemin apparaît dans cette liste.
+    
+    Args:
+        full_path: Chemin complet de l'image à vérifier
+        
+    Returns:
+        Tuple (bool, str): True si valide, False sinon, avec message d'erreur
+    """
     try:
         if not os.path.exists(full_path):
             return False, "FILE_MISSING"
@@ -22,6 +42,23 @@ def verify_image_validity(full_path):
         return False, str(type(e).__name__) + ": " + str(e)[:50]
     
 def scan_corrupted_images(root_folder, max_workers=4):
+    """
+    Scanne un dossier pour détecter les images corrompues.
+    
+    Parcourt récursivement le dossier, vérifie chaque image JPG/JPEG
+    avec verify_image_validity, et sauvegarde la liste des fichiers
+    corrompus dans un fichier texte. Utilise un ThreadPool pour
+    paralléliser les vérifications.
+    
+    Args:
+        root_folder: dossier racine à scanner
+        max_workers: nombre de threads pour la parallélisation
+        
+    Returns:
+        Tuple (corrupted, log_file):
+        - corrupted: list des chemins relatifs des images corrompues
+        - log_file: chemin du fichier log des erreurs
+    """
     start_time = time.time()
     
     image_paths = []
